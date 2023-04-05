@@ -31,6 +31,9 @@ if private_key:
 if client_email:
     firebase_cred["client_email"] = client_email
 
+if project_id:
+    firebase_cred["project_id"] = project_id
+
 cred = credentials.Certificate(firebase_cred)
 firebase_admin.initialize_app(cred)
 
