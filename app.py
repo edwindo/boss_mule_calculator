@@ -1,14 +1,37 @@
 import json
+import requests
+import firebase_admin
+import os
 
 from flask import Flask, render_template, request, jsonify
-import firebase_admin
 from firebase_admin import credentials, firestore, auth
-import requests
 from bs4 import BeautifulSoup
 
 # Firebase Authentication
 
-cred = credentials.Certificate('firebase-adminsdk.json')
+firebase_cred = {
+  "type": "service_account",
+  "client_id": "113130100201188313196",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-pueqw%40boss-mule-income-calculator.iam.gserviceaccount.com"
+}
+project_id = os.environ.get("project_id")
+private_key_id = os.environ.get("private_key_id")
+private_key = os.environ.get("private_key")
+client_email = os.environ.get("client_email")
+
+if private_key_id:
+    firebase_cred["private_key_id"] = private_key_id
+
+if private_key:
+    firebase_cred["private_key"] = private_key
+
+if client_email:
+    firebase_cred["client_email"] = client_email
+
+cred = credentials.Certificate(firebase_cred)
 firebase_admin.initialize_app(cred)
 
 db = firestore.client()
