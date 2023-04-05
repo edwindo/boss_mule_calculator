@@ -1,12 +1,56 @@
-.button {
-    display: inline-block;
-    padding: 8px 16px;
-    background-color: #4CAF50;
-    color: white;
-    text-decoration: none;
-    border: none;
-    border-radius: 4px;
-    font-size: 16px;
-    cursor: pointer;
-  }
+button.add-character-button, a.add-character-button {
+  background-color: #43a047;
+  color: #ffffff;
+  border: none;
+  padding: 8px 12px;
+  font-size: 16px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+  text-decoration: none; /* add this line */
+}
+
+button.add-character-button:hover, a.add-character-button:hover {
+  background-color: #2e7d32;
+}
+
+
+button.delete-button {
+  background-color: #c62828;
+  color: #ffffff;
+  border: none;
+  padding: 8px 12px;
+  font-size: 16px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+button.delete-button:hover {
+  background-color: #b71c1c;
+}
   
+
+button.edit-button {
+  background-color: #2e2e2e;
+  color: #ffffff;
+  border: none;
+  padding: 8px 12px;
+  font-size: 16px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+button.edit-button:hover {
+  background-color: #454545;
+}

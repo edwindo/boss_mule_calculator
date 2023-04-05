@@ -3,21 +3,26 @@ form.addEventListener('submit', (event) => {
   event.preventDefault();
   const formData = new FormData(form);
   const formObject = Object.fromEntries(formData.entries());
+
+  // Add userIdToken to add character form
+  const userIdToken = localStorage.getItem('userIdToken')
+  formObject['userIdToken'] = userIdToken
   
-  fetch('/add_character', {
+  fetch('/characters', {
     method: 'POST',
     body: JSON.stringify(formObject),
     headers: {
       'Content-Type': 'application/json'
     }
   })
-  .then(response => response.json())
-  .then(data => {
-    console.log(data);
+  .then(() => {
+    // Navigate to homepage after form submission
+    window.location.href = "/";
   })
   .catch(error => {
     console.error(error);
   });
+  
 });
 
 

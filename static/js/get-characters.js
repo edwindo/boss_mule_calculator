@@ -2,9 +2,30 @@
 const YES_VALUE = "Yes"
 const NO_VALUE = "No"
 
+// Helper
+function testImage(url) {
+    return new Promise(function(resolve, reject) {
+      var img = new Image();
+      img.onload = function() {
+        resolve(true);
+      };
+      img.onerror = function() {
+        reject(false);
+      };
+      img.src = url;
+    });
+  }
+
 function getCharacters() {
-    // Make an API call toLocaleString('en-US, {}) the Flask backend
-    fetch('/get_data')
+    const userIdToken = localStorage.getItem('userIdToken')
+    if (userIdToken === null) {
+      location.href = "/login"
+      return
+    }
+
+    const params = new URLSearchParams({ userIdToken: userIdToken})
+
+    fetch('/characters?' + params, {method: 'GET'})
     .then(response => response.json())
     .then(characterData => {
         const characterTable = document.getElementById("characters");
@@ -14,16 +35,21 @@ function getCharacters() {
             const newRow = characterTable.insertRow();
     
             const characterNameCell = newRow.insertCell();
-            characterNameCell.innerHTML = character["character-name"]
+            characterNameCell.innerHTML = character["characterName"]
 
-            if (character['character-image-url']) {
-                var img = document.createElement('img')
-                img.src = character['character-image-url']
-                characterNameCell.appendChild(img)
+            var img = document.createElement('img')
+            if (character['characterImageUrl']) {
+                testImage(character['characterImageUrl'])
+                .then(() => {
+                    img.src = character['characterImageUrl']
+                })
+                .catch(() => {
+                    img.src = '/static/images/bluesnail.webp'
+                });
             } else {
-                console.log("No image found for character")
+                img.src = '/static/images/bluesnail.webp'
             }
-
+            characterNameCell.appendChild(img)
 
             const hillaCell = newRow.insertCell();
             hillaCell.innerHTML = character["hilla"] ? YES_VALUE : NO_VALUE
@@ -55,20 +81,75 @@ function getCharacters() {
             const vellumCell = newRow.insertCell();
             vellumCell.innerHTML = character["vellum"] ? YES_VALUE : NO_VALUE
 
-            const totalIncomeCell = newRow.insertCell();
-            totalIncomeCell.innerHTML = character["total-income"].toLocaleString('en-US', {})
+            const papCell = newRow.insertCell();
+            papCell.innerHTML = character["pap"] ? YES_VALUE : NO_VALUE;
 
-            totalIncome += character["total-income"]
+            const akechiCell = newRow.insertCell();
+            akechiCell.innerHTML = character["akechi"] ? YES_VALUE : NO_VALUE;
+
+            const lotusCell = newRow.insertCell();
+            lotusCell.innerHTML = character["lotus"] ? YES_VALUE : NO_VALUE;
+
+            const damienCell = newRow.insertCell();
+            damienCell.innerHTML = character["damien"] ? YES_VALUE : NO_VALUE;
+
+            const slimeCell = newRow.insertCell();
+            slimeCell.innerHTML = character["slime"] ? YES_VALUE : NO_VALUE;
+
+            const totalIncomeCell = newRow.insertCell();
+            totalIncomeCell.innerHTML = character["totalIncome"].toLocaleString('en-US', {})
+
+            totalIncome += character["totalIncome"]
+
+              // Add edit button
+            const editCell = newRow.insertCell();
+            const editBtn = document.createElement("button");
+            editBtn.innerHTML = "Edit";
+            editBtn.className = "btn btn-secondary";
+            editBtn.addEventListener("click", function() {
+                location.href = "/edit_character?name=" + character["characterName"]
+            });
+            editCell.appendChild(editBtn);
+
+            // Add delete button
+            const deleteCell = newRow.insertCell();
+            const deleteBtn = document.createElement("button");
+            deleteBtn.innerHTML = "Delete";
+            deleteBtn.className = "btn btn-danger";
+            deleteBtn.addEventListener("click", function() {
+                deleteCharacter(character["characterName"]);
+            });
+            deleteCell.appendChild(deleteBtn);
         });
 
         var totalIncomeText = document.createElement('div');
         const incomeString = "Total Weekly Income: " + totalIncome.toLocaleString('en-US', {}) + " mesos."
         totalIncomeText.textContent = incomeString
+        totalIncomeText.className = "text-center font-weight-bold display-4"
         document.body.appendChild(totalIncomeText)
 
     })
     .catch(error => console.error(error));
+}
 
+function deleteCharacter(characterName) {
+    const userIdToken = localStorage.getItem('userIdToken')
+    const params = new URLSearchParams({ name: characterName, userIdToken: userIdToken})
 
+    if (confirm("Are you sure you want to delete this character?")) {
+        fetch('/characters?' + params, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          })
+          .then((response => {
+            location.reload();
+          }))
+          .catch(error => {
+            console.error(error);
+          });
+    }
 
 }
+

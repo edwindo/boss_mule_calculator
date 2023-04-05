@@ -18,7 +18,7 @@ db = firestore.client()
 app = Flask(__name__)
 
 # Constants
-FAVICON_PATH = '../favicon.ico'
+FAVICON_PATH = 'favicon.ico'
 
 BOSS_VALUES = {
     'hilla': 56250000,
