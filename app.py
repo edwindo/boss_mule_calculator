@@ -19,7 +19,8 @@ firebase_cred = {
 }
 project_id = os.environ.get("project_id")
 private_key_id = os.environ.get("private_key_id")
-private_key = os.environ.get("private_key")
+private_key_json = os.environ.get("private_key_json")
+private_key = json.loads(private_key_json)["private_key"]
 client_email = os.environ.get("client_email")
 
 if private_key_id:
